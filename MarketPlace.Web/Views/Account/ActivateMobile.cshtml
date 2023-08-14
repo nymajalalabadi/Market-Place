@@ -1,0 +1,52 @@
+﻿@model MarketPlace.DataLayer.DTOs.Account.ActivateMobileDTO;
+@{
+    ViewData["Title"] = "اکتیو کردن موبایل";
+}
+
+@section scripts
+{
+    <partial name="_JqueryValidators" />
+    <partial name="_CaptchaScripts" />
+}
+
+<div class="breadcrumbs_area">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="breadcrumb_content">
+                    <ul>
+                        <li><a href="/">خانه</a></li>
+                        <li>@ViewData["Title"]</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="customer_login mt-60">
+    <div class="container">
+        <div class="row">
+            <!--register area start-->
+            <div class="col-lg-6 col-md-6 offset-lg-3 offset-md-3">
+                <div class="account_form register">
+                    <h2>لاگین</h2>
+                    <form asp-controller="Account" asp-action="ActivateMobile" method="post">
+                        <partial name="_CaptchaInput" />
+                        <input type="hidden" asp-for="Mobile" />
+                        <p>
+                            <label> کد اکتیو<span></span></label>
+                            <input type="text" asp-for="MobileActiveCode">
+                            <span class="text-danger" asp-validation-for="MobileActiveCode"></span>
+                        </p>
+                        <div class="login_submit">
+                            <button type="submit">اکتیو کردن موبایل </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <!--register area end-->
+        </div>
+    </div>
+</div>
+

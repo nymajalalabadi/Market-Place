@@ -1,0 +1,353 @@
+﻿@using MarketPlace.DataLayer.Entities.Site
+@using MarketPlace.DataLayer.Entities.Account
+@using MarketPlace.Application.EntitiesExtensions
+@using MarketPlace.DataLayer.Entities.Products
+@{
+    var siteSetting = ViewBag.siteSetting as SiteSetting;
+    var user = ViewBag.user as User;
+    var categories = ViewBag.ProductCategories as List<ProductCategory>;
+}
+
+<!--header area start-->
+<!--Offcanvas menu area start-->
+<div class="off_canvars_overlay">
+
+</div>
+<div class="Offcanvas_menu">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="canvas_open">
+                    <a href="javascript:void(0)"><i class="ion-navicon"></i></a>
+                </div>
+                <div class="Offcanvas_menu_wrapper">
+                    <div class="canvas_close">
+                        <a href="javascript:void(0)"><i class="ion-android-close"></i></a>
+                    </div>
+                    <div class="support_info">
+                        <p>تلفن تماس: <a class="ltr-text" href="tel:+989123456789">@siteSetting.Mobile</a></p>
+                    </div>
+                    <div class="top_right text-right">
+                        @if (!User.Identity.IsAuthenticated)
+                        {
+                            <ul>
+                                <li><a asp-controller="Account" asp-action="Register"> ثبت نام </a></li>
+                                <li><a asp-controller="Account" asp-action="Login"> ورود </a></li>
+                            </ul>
+                        }
+                        else
+                        {
+                            <ul>
+                                <li><a asp-area="User" asp-controller="Home" asp-action="DashBoard"> @user.GetUserShowName()، خوش آمدید </a></li>
+                                <li><a asp-controller="Account" asp-action="LogOut"> خروج </a></li>
+                            </ul>
+                        }
+                    </div>
+                    <div class="search_container">
+                        <form action="#">
+                            <div class="hover_category">
+                                <select class="select_option" name="select" id="categori">
+                                    <option selected value="1">همه دسته ها</option>
+                                    <option value="2">لوازم جانبی</option>
+                                    <option value="3">سایر لوازم جانبی</option>
+                                    <option value="4">قطعات کامپیوتر</option>
+                                    <option value="5">دوربین و ویدیو </option>
+                                    <option value="6">صفحه نمایش</option>
+                                    <option value="7">تبلت ها</option>
+                                    <option value="8">لپ تاپ ها</option>
+                                    <option value="9">کیف دستی</option>
+                                    <option value="10">هدفون و اسپیکر</option>
+                                    <option value="11">گیاهان دارویی</option>
+                                    <option value="12">سبزیجات</option>
+                                    <option value="13">فروشگاه</option>
+                                    <option value="14">لپ تاپ و کامپیوتر</option>
+                                    <option value="15">ساعت ها</option>
+                                    <option value="16">لوازم الکترونیکی</option>
+                                </select>
+                            </div>
+                            <div class="search_box">
+                                <input placeholder="جستجوی محصول ..." type="text">
+                                <button type="submit">جستجو</button>
+                            </div>
+                        </form>
+                    </div>
+
+                    @await Component.InvokeAsync("UserOrder")
+
+                    <div id="menu" class="text-left ">
+                        <ul class="offcanvas_main_menu">
+                            <li class="menu-item-has-children active">
+                                <a href="#">خانه</a>
+                                <ul class="sub-menu">
+                                    <li><a href="index.html">خانه 1</a></li>
+                                    <li><a href="index-2.html">خانه 2</a></li>
+                                    <li><a href="index-3.html">خانه 3</a></li>
+                                    <li><a href="index-4.html">خانه 4</a></li>
+                                    <li><a href="index-5.html">خانه 5</a></li>
+                                </ul>
+                            </li>
+                            <li>
+                                <a asp-area="" asp-controller="Product" asp-action="FilterProducts">فروشگاه</a>
+                            </li>
+                            <li class="menu-item-has-children">
+                                <a href="my-account.html">حساب کاربری</a>
+                            </li>
+                            <li class="menu-item-has-children">
+                                <a href="about.html">درباره ما</a>
+                            </li>
+                            <li class="menu-item-has-children">
+                                <a asp-controller="Home" asp-action="ContactUs"> تماس با ما</a>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="Offcanvas_footer">
+                        <span><a href="#"><i class="fa fa-envelope-o"></i> info@yourdomain.com</a></span>
+                        <ul>
+                            <li class="facebook"><a href="#"><i class="fa fa-facebook"></i></a></li>
+                            <li class="twitter"><a href="#"><i class="fa fa-twitter"></i></a></li>
+                            <li class="pinterest"><a href="#"><i class="fa fa-pinterest-p"></i></a></li>
+                            <li class="google-plus"><a href="#"><i class="fa fa-google-plus"></i></a></li>
+                            <li class="telegram"><a href="#"><i class="fa fa-telegram"></i></a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--Offcanvas menu area end-->
+
+<header>
+    <div class="main_header">
+        <!--header top start-->
+        <div class="header_top">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-lg-6 col-md-6">
+                        <div class="support_info">
+                            <p>تلفن تماس: <a class="ltr-text" href="tel:+989123456789">@siteSetting.Mobile</a></p>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-6">
+                        <div class="top_right text-right">
+                            @if (!User.Identity.IsAuthenticated)
+                            {
+                                <ul>
+                                    <li><a asp-controller="Account" asp-action="Register"> ثبت نام </a></li>
+                                    <li><a asp-controller="Account" asp-action="Login"> ورود </a></li>
+                                </ul>
+                            }
+                            else
+                            {
+                                <ul>
+                                    <li><a asp-area="User" asp-controller="Home" asp-action="DashBoard"> @user.GetUserShowName()، خوش آمدید </a></li>
+                                    <li><a asp-controller="Account" asp-action="LogOut"> خروج </a></li>
+                                </ul>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--header top start-->
+        <!--header middel start-->
+        <div class="header_middle">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-lg-3 col-md-6">
+                        <div class="logo">
+                            <a href="index.html"><img src="/img/logo/logo.png" alt=""></a>
+                        </div>
+                    </div>
+                    <div class="col-lg-9 col-md-6">
+                        <div class="middel_right">
+                            <div class="search_container">
+                                <form action="#">
+                                    <div class="hover_category">
+                                        <select class="select_option" name="select" id="categori1">
+                                            <option selected value="1">همه دسته ها</option>
+                                            <option value="2">لوازم جانبی</option>
+                                            <option value="3">سایر لوازم جانبی</option>
+                                            <option value="4">قطعات کامپیوتر</option>
+                                            <option value="5">دوربین و ویدیو </option>
+                                            <option value="6">صفحه نمایش</option>
+                                            <option value="7">تبلت ها</option>
+                                            <option value="8">لپ تاپ ها</option>
+                                            <option value="9">کیف دستی</option>
+                                            <option value="10">هدفون و اسپیکر</option>
+                                            <option value="11">گیاهان دارویی</option>
+                                            <option value="12">سبزیجات</option>
+                                            <option value="13">فروشگاه</option>
+                                            <option value="14">لپ تاپ و کامپیوتر</option>
+                                            <option value="15">ساعت ها</option>
+                                            <option value="16">لوازم الکترونیکی</option>
+                                        </select>
+                                    </div>
+                                    <div class="search_box">
+                                        <input placeholder="جستجوی محصول ..." type="text">
+                                        <button type="submit">جستجو</button>
+                                    </div>
+                                </form>
+                            </div>
+                            @await Component.InvokeAsync("UserOrder")
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--header middel end-->
+        <!--header bottom satrt-->
+        <div class="main_menu_area">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-lg-3 col-md-12">
+                        <div class="categories_menu">
+                            <div class="categories_title">
+                                <h2 class="categori_toggle">دسته ‌بندی ها</h2>
+                            </div>
+                            <div class="categories_menu_toggle">
+                                <ul>
+                                    @if (categories != null && categories.Any())
+                                    {
+                                        @foreach (var category in categories.Where(s => s.ParentId == null))
+                                        {
+                                            if (categories.Any(s => s.ParentId == category.Id))
+                                            {
+                                                <li class="menu_item_children">
+                                                    <a href="#">@category.Title <i class="fa fa-angle-left"></i></a>
+                                                    <ul class="categories_mega_menu">
+                                                        @foreach (var subCategory in categories.Where(s => s.ParentId == category.Id))
+                                                        {
+                                                            <li class="menu_item_children">
+                                                                <a href="#">@subCategory.Title</a>
+                                                                @if (categories.Any(s => s.ParentId == subCategory.Id))
+                                                                {
+                                                                    <ul class="categorie_sub_menu">
+                                                                        @foreach (var secondSubCategory in categories.Where(s => s.ParentId == subCategory.Id))
+                                                                        {
+                                                                            <li><a href="">@secondSubCategory.Title</a></li>
+                                                                        }
+                                                                    </ul>
+                                                                }
+                                                            </li>
+                                                        }
+                                                    </ul>
+                                                </li>
+                                            }
+                                        }
+                                    }
+
+
+
+                                    @*<li id="cat_toggle" class="has-sub">
+                                            <a href="#"> دسته های بیشتر</a>
+                                            <ul class="categorie_sub">
+                                                <li><a href="#">دسته پنهان</a></li>
+                                            </ul>
+
+                                        </li>*@
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-9 col-md-12">
+                        <div class="main_menu menu_position">
+                            <nav>
+                                <ul>
+                                    <li>
+                                        <a class="active" href="/">خانه<i class="fa fa-angle-down"></i></a>
+                                    </li>
+                                    <li class="mega_items">
+                                        <a asp-area="" asp-controller="Product" asp-action="FilterProducts">محصولات</a>
+
+                                    </li>
+                                    <li>
+                                        <a href="blog.html">بلاگ<i class="fa fa-angle-down"></i></a>
+                                        <ul class="sub_menu pages">
+                                            <li><a href="blog-details.html">جزئیات مطلب بلاگ</a></li>
+                                            <li><a href="blog-fullwidth.html">بلاگ تمام عرض</a></li>
+                                            <li><a href="blog-sidebar.html">بلاگ نوار کناری راست</a></li>
+                                            <li><a href="blog-no-sidebar.html">بلاگ بدون نوار کناری</a></li>
+                                        </ul>
+                                    </li>
+                                    <li>
+                                        <a href="#">صفحات <i class="fa fa-angle-down"></i></a>
+                                        <ul class="sub_menu pages">
+                                            <li><a asp-controller="Home" asp-action="AboutUs">درباره ما</a></li>
+                                            <li><a href="services.html">خدمات</a></li>
+                                            <li><a href="privacy-policy.html">سیاست حریم خصوصی</a></li>
+                                            <li><a href="faq.html">سوالات متداول</a></li>
+                                            <li><a href="contact.html">تماس</a></li>
+                                            <li><a href="login.html">ورود</a></li>
+                                            <li><a href="404.html">خطای 404</a></li>
+                                        </ul>
+                                    </li>
+
+                                    <li><a asp-controller="Home" asp-action="AboutUs">درباره ما</a></li>
+                                    <li><a asp-controller="Home" asp-action="ContactUs"> تماس با ما</a></li>
+                                </ul>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--header bottom end-->
+    </div>
+</header>
+<!--header area end-->
+<!--sticky header area start-->
+<div class="sticky_header_area sticky-header">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-3">
+                <div class="logo">
+                    <a href="index.html"><img src="/img/logo/logo.png" alt=""></a>
+                </div>
+            </div>
+            <div class="col-lg-9">
+                <div class="sticky_header_right menu_position">
+                    <div class="main_menu">
+                        <nav>
+                            <ul>
+                                <li>
+                                    <a class="active" href="/">خانه</a>
+                                </li>
+                                <li class="mega_items">
+                                    <a asp-area="" asp-controller="Product" asp-action="FilterProducts">فروشگاه</a>
+                                </li>
+                                <li>
+                                    <a href="blog.html">بلاگ<i class="fa fa-angle-down"></i></a>
+                                    <ul class="sub_menu pages">
+                                        <li><a href="blog-details.html">جزئیات مطلب بلاگ</a></li>
+                                        <li><a href="blog-fullwidth.html">بلاگ تمام عرض</a></li>
+                                        <li><a href="blog-sidebar.html">بلاگ نوار کناری راست</a></li>
+                                        <li><a href="blog-no-sidebar.html">بلاگ بدون نوار کناری</a></li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <a href="#">صفحات <i class="fa fa-angle-down"></i></a>
+                                    <ul class="sub_menu pages">
+                                        <li><a href="about.html">درباره ما</a></li>
+                                        <li><a href="services.html">خدمات</a></li>
+                                        <li><a href="privacy-policy.html">سیاست حریم خصوصی</a></li>
+                                        <li><a href="faq.html">سوالات متداول</a></li>
+                                        <li><a href="contact.html">تماس</a></li>
+                                        <li><a href="login.html">ورود</a></li>
+                                        <li><a href="404.html">خطای 404</a></li>
+                                    </ul>
+                                </li>
+
+                                <li><a href="about.html">درباره ما</a></li>
+                                <li><a href="contact.html"> تماس با ما</a></li>
+                            </ul>
+                        </nav>
+                    </div>
+                    @await Component.InvokeAsync("UserOrder")
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--sticky header area end-->

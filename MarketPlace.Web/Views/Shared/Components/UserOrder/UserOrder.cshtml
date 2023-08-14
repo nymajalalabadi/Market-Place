@@ -1,0 +1,64 @@
+﻿@using MarketPlace.Application.Utils
+@model MarketPlace.DataLayer.DTOs.Orders.UserOpenOrderDTO
+
+@{
+    var totalPrice = Model.GetTotalPrice();
+}
+
+<div class="middel_right_info">
+    <div class="header_wishlist">
+        <a href="wishlist.html"><i class="fa fa-heart-o" aria-hidden="true"></i></a>
+        <span class="wishlist_quantity">3</span>
+    </div>
+    <div class="mini_cart_wrapper">
+        <a href="javascript:void(0)"><i class="fa fa-shopping-bag" aria-hidden="true"></i> <i class="fa fa-angle-down"></i></a>
+        <span class="cart_quantity">@Model.Details.Count</span>
+        <!--mini cart-->
+        <div class="mini_cart">
+            <div class="cart_items_container">
+                @if (Model.Details != null && Model.Details.Any())
+                {
+                    foreach (var detail in Model.Details)
+                    {
+                        <div class="cart_item">
+                            <div class="cart_img">
+                                <a asp-controller="Product" asp-action="ProductDetail" asp-route-productId="@detail.ProductId"
+                                   asp-route-title="@detail.ProductTitle">
+                                    <img src="@(PathExtension.ProductThumbnailImage + detail.ProductImageName)" alt="">
+                                </a>
+                            </div>
+                            <div class="cart_info">
+                                <a asp-controller="Product" asp-action="ProductDetail" asp-route-productId="@detail.ProductId"
+                                   asp-route-title="@detail.ProductTitle">
+                                    @detail.ProductTitle - @detail.ColorName
+                                </a>
+                                <p>تعداد: @detail.Count × <span> @((detail.ProductPrice + detail.ProductColorPrice).ToString("#,0")) تومان </span></p>
+                            </div>
+                            <div class="cart_remove">
+                                <a href="#"><i class="ion-android-close"></i></a>
+                            </div>
+                        </div>
+                    }
+                }
+            </div>
+            <div class="mini_cart_table">
+                <div class="cart_total mt-10">
+                    <span>جمع کل:</span>
+                    <span class="price">@totalPrice.ToString("#,0") تومان </span>
+                </div>
+            </div>
+
+            <div class="mini_cart_footer">
+                <div class="cart_button">
+                    <a asp-area="User" asp-controller="Order" asp-action="UserOpenOrder">مشاهده سبد</a>
+                </div>
+                <div class="cart_button">
+                    <a asp-area="User" asp-controller="Order" asp-action="PayUserOrderPrice">پرداخت</a>
+                </div>
+
+            </div>
+
+        </div>
+        <!--mini cart end-->
+    </div>
+</div>

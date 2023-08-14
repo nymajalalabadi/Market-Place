@@ -1,0 +1,19 @@
+﻿@{
+    var hasUserAnyActiveSellerPanel = (bool)ViewBag.hasUserAnyActiveSellerPanel;
+}
+
+<div class="dashboard_tab_button">
+    <ul role="tablist" class="nav flex-column dashboard-list">
+        <li><a asp-area="User" asp-controller="Home" asp-action="DashBoard" class="nav-link active show">داشبورد</a></li>
+        <li><a asp-area="Seller" asp-controller="Home" asp-action="Index" class="nav-link">مشاهده پنل فروشندگی</a></li>
+        <li> <a asp-area="User" asp-controller="Account" asp-action="ChangePassword" class="nav-link">تغییر کلمه ی عبور</a></li>
+        <li> <a asp-area="User" asp-controller="Account" asp-action="EditProfile" class="nav-link">ویرایش اطلاعات</a></li>
+        <li> <a asp-area="User" asp-controller="Ticket" asp-action="AddTicket" class="nav-link">ثبت تیکت جدید</a></li>
+        <li> <a asp-area="User" asp-controller="Ticket" asp-action="Index" class="nav-link">لیست تیکت ها </a></li>
+        <li>
+            <a asp-area="User" asp-controller="Seller" asp-action="RequestSellerPanel" class="nav-link">در خواست پنل فروشندگی</a>
+        </li>
+        <li> <a asp-area="User" asp-controller="Seller" asp-action="SellerRequests" class="nav-link">درخواست های فروشندگی</a></li>
+        <li><a asp-controller="Account" asp-action="LogOut" class="nav-link">خروج</a></li>
+    </ul>
+</div>

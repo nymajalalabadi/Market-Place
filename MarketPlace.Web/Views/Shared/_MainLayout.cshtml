@@ -1,0 +1,22 @@
+﻿<!DOCTYPE html >
+<html class="no-js" lang="en" dir="rtl">
+<head dir="rtl">
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title> Market Place | @ViewData["Title"] </title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <partial name="_HeaderReferences" />
+    @RenderSection("styles",false) 
+</head>
+
+<body dir="rtl">
+    @await Component.InvokeAsync("SiteHeader")
+    @RenderBody()
+    @await Component.InvokeAsync("SiteFooter")
+    <partial name="_FooterReferences" />
+    @RenderSection("scripts", false)
+    <partial name="_SiteMessages" />
+</body>
+
+</html>

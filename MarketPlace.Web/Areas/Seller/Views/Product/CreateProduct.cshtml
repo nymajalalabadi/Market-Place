@@ -1,0 +1,172 @@
+﻿@using MarketPlace.DataLayer.Entities.Products
+@model MarketPlace.DataLayer.DTOs.Products.CreateProductDTO
+@{
+    ViewData["Title"] = "ثبت محصول";
+    var categories = ViewBag.Categories as List<ProductCategory>;
+}
+
+
+<div class="breadcrumbs_area">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="breadcrumb_content">
+                    <ul>
+                        <li><a href="/">خانه</a></li>
+                        <li>@ViewData["Title"]</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<section class="main_content_area">
+    <div class="container">
+        <div class="account_dashboard">
+            <div class="row">
+                <div class="col-sm-12 col-md-3 col-lg-3">
+                    @await Component.InvokeAsync("SellerSidebar")
+                </div>
+                <div class="col-sm-12 col-md-9 col-lg-9">
+                    <!-- Tab panes -->
+                    <div class="tab-content dashboard_content">
+                        <div class="tab-pane fade active show" id="account-details">
+                            <h3>@ViewData["Title"] </h3>
+                            <div class="login">
+                                <div class="login_form_container">
+                                    <div class="account_login_form">
+                                        <form asp-area="Seller" asp-controller="Product" asp-action="CreateProduct"
+                                              enctype="multipart/form-data" id="create_product_form">
+
+                                            <label>نام محصول</label>
+                                            <input asp-for="Title">
+                                            <span class="text-danger" asp-validation-for="Title"></span>
+                                            <br />
+                                            <label>قیمت محصول</label>
+                                            <input asp-for="Price">
+                                            <span class="text-danger" asp-validation-for="Price"></span>
+                                            <br />
+                                            <label>توضیحات کوتاه محصول</label>
+                                            <br />
+                                            <textarea asp-for="ShortDescription" style="width: 100%" rows="10"></textarea>
+                                            <span class="text-danger" asp-validation-for="ShortDescription"></span>
+                                            <br />
+                                            <label>توضیحات محصول</label>
+                                            <textarea asp-for="Description" ckeditor="1"></textarea>
+                                            <span class="text-danger" asp-validation-for="Description"></span>
+                                            <br />
+                                            <label>
+                                                <input type="checkbox" name="@nameof(Model.IsActive)" value="true" /> فعال / غیر فعال
+                                            </label>
+                                            <br />
+                                            <div class="col-md-9">
+                                                <input type="file" name="productImage" accept=".png,.jpeg" />
+                                            </div>
+                                            <hr />
+                                            @if (categories != null && categories.Any())
+                                            {
+                                                @foreach (var category in categories.Where(s => s.ParentId == null))
+                                                {
+                                                    <ul>
+                                                        <li>
+                                                            <label>
+                                                                <input type="checkbox" name="@nameof(Model.SelectedCategories)" value="@category.Id" main_category_checkbox="@category.Id" />
+                                                                @category.Title
+                                                            </label>
+
+                                                            <div id="sub_categories_@category.Id" style="display: none">
+
+                                                                @foreach (var subCategory in categories.Where(s => s.ParentId == category.Id))
+                                                                {
+                                                                    <label>
+                                                                        <input type="checkbox" name="@nameof(Model.SelectedCategories)" value="@subCategory.Id" main_category_checkbox="@subCategory.Id" parent-category-id="@category.Id" /> @subCategory.Title
+                                                                    </label>
+                                                                    <div id="sub_categories_@subCategory.Id" style="display: none">
+
+                                                                        @foreach (var secondSubCategory in categories.Where(s => s.ParentId == subCategory.Id))
+                                                                        {
+                                                                            <label>
+                                                                                <input type="checkbox" name="@nameof(Model.SelectedCategories)" value="@secondSubCategory.Id" parent-category-id="@subCategory.Id" /> @secondSubCategory.Title
+                                                                            </label>
+                                                                        }
+                                                                    </div>
+                                                                }
+                                                            </div>
+                                                        </li>
+
+                                                    </ul>
+                                                    <hr />
+                                                }
+                                            }
+
+                                            <label>رنگ محصول</label>
+                                            <input type="text" placeholder="رنگ محصول" id="product_color_name_input">
+
+                                            <label>کد رنگ محصول</label>
+                                            <input type="color" id="product_color_code_input">
+
+                                            <label>قیمت مضاف رنگ محصول</label>
+                                            <input type="number" placeholder="قیمت مضاف رنگ محصول" id="product_color_price_input">
+
+                                            <button class="btn btn-success" id="add_color_button">افزودن رنگ</button>
+                                            <br />
+                                            <br />
+                                            <div class="table-responsive">
+                                                <table class="table">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>نام رنگ</th>
+                                                            <th>قیمت</th>
+                                                            <th>کد رنگ</th>
+                                                            <th>دستورات</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody id="list_of_product_colors">
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                            <hr />
+
+                                            <label>ویژگی محصول</label>
+                                            <input type="text" placeholder="ویژگی محصول" id="product_feature_input">
+
+                                            <label> مقدار ویژگی محصول</label>
+                                            <input type="text" placeholder="مقدار ویژگی محصول" id="product_feature_value_input">
+
+                                            <button class="btn btn-success" id="add_feature_button">افزودن ویژگی</button>
+
+                                            <div class="table-responsive">
+                                                <table class="table">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>نام ویژگی</th>
+                                                            <th>مقدار ویژگی</th>
+                                                            <th>دستورات</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody id="list_of_product_features">
+                                                     
+                                                    </tbody>
+                                                </table>
+                                            </div>
+
+                                            <div class="save_button primary_btn default_button">
+                                                <button type="submit">افزودن</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section scripts 
+{
+    <partial name="_JqueryValidators" />
+}

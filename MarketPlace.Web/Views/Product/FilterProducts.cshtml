@@ -1,0 +1,236 @@
+﻿@using MarketPlace.Application.Utils
+@using MarketPlace.DataLayer.DTOs.Products
+@using MarketPlace.DataLayer.Entities.Products
+@model MarketPlace.DataLayer.DTOs.Products.FilterProductDTO
+@{
+    ViewData["Title"] = "فیلتر محصولات";
+    var productCategories = ViewBag.ProductCategories as List<ProductCategory>;
+}
+
+@section scripts
+{
+    <script>
+        /*---slider-range here---*/
+        $("#slider-range").slider({
+            range: true,
+            min: @Model.FilterMinPrice,
+            max: @Model.FilterMaxPrice,
+            step: @Model.PriceStep,
+            values: [@Model.SelectedMinPrice, @Model.SelectedMaxPrice],
+            slide: function (event, ui) {
+                var $value0 = ui.values[0].toLocaleString();
+                var $value1 = ui.values[1].toLocaleString();
+                $("#amount").val($value1 + " تومان - " + $value0 + " تومان");
+                $("#price-min").val(ui.values[0]);
+                $("#price-max").val(ui.values[1]);
+            }
+        });
+        var $value0 = $("#slider-range").slider("values", 0).toLocaleString();
+        var $value1 = $("#slider-range").slider("values", 1).toLocaleString();
+        $("#amount").val($value1 + " تومان - " + $value0 + " تومان");
+        $("#price-min").val($("#slider-range").slider("values", 0));
+        $("#price-max").val($("#slider-range").slider("values", 1));
+    </script>
+}
+
+<div class="breadcrumbs_area">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="breadcrumb_content">
+                    <ul>
+                        <li><a href="/">خانه</a></li>
+                        <li>محصولات</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<form asp-area="" asp-controller="Product" asp-action="FilterProducts" method="get" id="filter-form">
+    <input type="hidden" asp-for="PageId" />
+    <input type="hidden" asp-for="FilterMinPrice" />
+    <input type="hidden" asp-for="FilterMaxPrice" />
+    <div class="shop_area shop_reverse mt-60 mb-60">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-3 col-md-12">
+                    <!--sidebar widget start-->
+                    <aside class="sidebar_widget">
+                        <div class="widget_inner">
+                            <div class="widget_list widget_categories">
+                                <h2>دسته های محصولات</h2>
+                                @if (productCategories != null && productCategories.Any())
+                                {
+                                    <ul>
+                                        <li class="">
+                                            <a asp-area="" asp-controller="Product" asp-action="FilterProducts" asp-route-Category="">همه</a>
+                                        </li>
+
+                                        @foreach (var mainCategory in productCategories.Where(s => s.ParentId == null))
+                                        {
+                                            <li class="widget_sub_categories">
+                                                <a href="javascript:void(0)" category-dropdown-button="@mainCategory.Id">
+                                                @mainCategory.Title</a>
+                                                @if (productCategories.Any(s => s.ParentId == mainCategory.Id))
+                                                {
+                                                    <ul class="widget_dropdown_categories" category-dropdown-list="@mainCategory.Id">
+                                                        @foreach (var subCategory in productCategories
+                                                            .Where(s => s.ParentId == mainCategory.Id))
+                                                        {
+                                                            <li><a asp-area="" asp-controller="Product" asp-action="FilterProducts" 
+                                                                   asp-route-Category="@subCategory.UrlName">@subCategory.Title</a></li>
+                                                        }
+                                                    </ul>
+                                                }
+                                            </li>
+                                        }
+                                    </ul>
+                                }
+                            </div>
+                            <div class="widget_list widget_filter">
+                                <h2>فیلتر با قیمت</h2>
+
+                                <div id="slider-range"></div>
+                                <input type="text" id="amount">
+                                <button type="submit">فیلتر</button>
+                                <input type="hidden" id="price-min" asp-for="SelectedMinPrice">
+                                <input type="hidden" id="price-max" asp-for="SelectedMaxPrice">
+
+                            </div>
+                        </div>
+                    </aside>
+                    <!--sidebar widget end-->
+                </div>
+                <div class="col-lg-9 col-md-12">
+                    <!--shop wrapper start-->
+                    <!--shop toolbar start-->
+                    <div class="shop_toolbar_wrapper">
+                        <div class="shop_toolbar_btn">
+
+                            <button data-role="grid_3" type="button" class="btn-grid-3 active" data-toggle="tooltip" title="" data-original-title="3"></button>
+
+                            <button data-role="grid_4" type="button" class="btn-grid-4" data-toggle="tooltip" title="" data-original-title="4"></button>
+
+                            <button data-role="grid_list" type="button" class="btn-list" data-toggle="tooltip" title="" data-original-title="لیست"></button>
+                        </div>
+                        <div class="niceselect_container">
+                            <label>ترتیب:</label>
+                            <select class="select_option" asp-for="FilterProductOrderBy" 
+                                    asp-items="@Html.GetEnumSelectList<FilterProductOrderBy>()">
+                            </select>
+                        </div>
+                        <div class="page_amount">
+                            <p>@Model.GetCurrentPaging().GetCurrentPagingStatus() محصول</p>
+                        </div>
+                    </div>
+                    <!--shop toolbar end-->
+                    <div class="row shop_wrapper grid_3">
+                        @if (Model.Products != null && Model.Products.Any())
+                        {
+                            foreach (var product in Model.Products)
+                            {
+                                <div class="col-md-4 col-sm-6 col-lg-4">
+                                    <article class="single_product">
+                                        <figure>
+                                            <div class="product_thumb">
+                                                <a class="primary_img" asp-controller="Product" asp-action="ProductDetail" 
+                                                   asp-route-productId="@product.Id" asp-route-title="@product.Title.FixTextForUrl()">
+                                                <img src="@(PathExtension.ProductImage + product.ImageName)" alt=""></a>
+                                                <a class="secondary_img" href="product-details.html">
+                                                <img src="@(PathExtension.ProductImage + product.ImageName)" alt=""></a>
+                                                <div class="label_product">
+                                                    <span class="label_sale">فروش</span>
+                                                </div>
+                                                <div class="action_links">
+                                                    <ul>
+                                                        <li class="wishlist"><a href="wishlist.html" title="" data-original-title="افزودن به علاقه‌مندی‌ها"><i class="fa fa-heart-o" aria-hidden="true"></i></a></li>
+                                                        <li class="compare"><a href="#" title="" data-original-title="مقایسه"><span class="ion-levels"></span></a></li>
+                                                        <li class="quick_button">
+                                                            <a href="#" data-toggle="modal" data-target="#modal_box" title="" data-original-title="مشاهده سریع"> <span class="ion-ios-search-strong"></span></a>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                                <div class="add_to_cart">
+                                                    <a href="cart.html" title="" data-original-title="افزودن به سبد">افزودن به سبد</a>
+                                                </div>
+                                            </div>
+                                            <div class="product_content grid_content">
+                                                <div class="price_box">
+                                                    @* <span class="old_price">86,000 تومان</span> *@
+                                                    <span class="current_price">@product.Price.ToString("#,0") تومان</span>
+                                                </div>
+                                                <div class="product_ratings">
+                                                    <ul>
+                                                        <li><a href="#"><i class="ion-android-star-outline"></i></a></li>
+                                                        <li><a href="#"><i class="ion-android-star-outline"></i></a></li>
+                                                        <li><a href="#"><i class="ion-android-star-outline"></i></a></li>
+                                                        <li><a href="#"><i class="ion-android-star-outline"></i></a></li>
+                                                        <li><a href="#"><i class="ion-android-star-outline"></i></a></li>
+                                                    </ul>
+                                                </div>
+                                                <h3 class="product_name grid_name"><a href="product-details.html">@product.Title</a></h3>
+                                            </div>
+                                            <div class="product_content list_content">
+                                                <div class="left_caption">
+                                                    <div class="price_box">
+                                                        @* <span class="old_price">86,000 تومان</span> *@
+                                                        <span class="current_price">@product.Price.ToString("#,0") تومان</span>
+                                                    </div>
+                                                    <h3 class="product_name"><a href="product-details.html">@product.Title</a></h3>
+                                                    <div class="product_ratings">
+                                                        <ul>
+                                                            <li><a href="#"><i class="ion-android-star-outline"></i></a></li>
+                                                            <li><a href="#"><i class="ion-android-star-outline"></i></a></li>
+                                                            <li><a href="#"><i class="ion-android-star-outline"></i></a></li>
+                                                            <li><a href="#"><i class="ion-android-star-outline"></i></a></li>
+                                                            <li><a href="#"><i class="ion-android-star-outline"></i></a></li>
+                                                        </ul>
+                                                    </div>
+                                                    <div class="product_desc">
+                                                        <p>@product.ShortDescription</p>
+                                                    </div>
+                                                </div>
+                                                <div class="right_caption">
+                                                    <div class="add_to_cart">
+                                                        <a href="cart.html" title="" data-original-title="افزودن به سبد">افزودن به سبد</a>
+                                                    </div>
+                                                    <div class="action_links">
+                                                        <ul>
+                                                            <li class="wishlist"><a href="wishlist.html" title="" data-original-title="افزودن به علاقه‌مندی‌ها"><i class="fa fa-heart-o" aria-hidden="true"></i> افزودن به علاقه‌مندی‌ها</a></li>
+                                                            <li class="compare"><a href="#" title="" data-original-title="مقایسه"><span class="ion-levels"></span> مقایسه</a></li>
+                                                            <li class="quick_button">
+                                                                <a href="#" data-toggle="modal" data-target="#modal_box" title="" data-original-title="مشاهده سریع"> <span class="ion-ios-search-strong"></span> نمایش سریع</a>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </figure>
+                                    </article>
+                                </div>
+                            }
+                        }
+                        else
+                        {
+                            <div class="col-md-12">
+                                <div class="alert alert-warning">
+                                    <p>هیچ محصولی یافت نشد</p>
+                                </div>
+                            </div>
+                        }
+                    </div>
+
+                    <div class="shop_toolbar t_bottom">
+                        <partial name="_PagingPartial" model="@Model.GetCurrentPaging()" />
+                    </div>
+                    <!--shop toolbar end-->
+                    <!--shop wrapper end-->
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+

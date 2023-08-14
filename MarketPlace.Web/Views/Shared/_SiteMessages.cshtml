@@ -1,0 +1,43 @@
+﻿@if (
+TempData["SuccessMassage"] != null ||
+TempData["ErrorMassage"] != null ||
+TempData["InfoMessage"] != null ||
+TempData["WarningMessage"] != null
+)
+{
+    if (TempData["SuccessMassage"] != null)
+    {
+        <script>
+            $(document).ready(function () {
+                ShowMessage('Success Message', '@TempData["SuccessMassage"]', 'success');
+            });
+        </script>
+    }
+
+    if (TempData["ErrorMassage"] != null)
+    {
+        <script>
+            $(document).ready(function () {
+                ShowMessage('Error Message', '@TempData["ErrorMassage"]', 'error');
+            });
+        </script>
+    }
+
+    if (TempData["WarningMassage"] != null)
+    {
+        <script>
+            $(document).ready(function () {
+                ShowMessage('Warning Message', '@TempData["WarningMassage"]', 'warning');
+            });
+        </script>
+    }
+
+    if (TempData["InfoMassage"] != null)
+    {
+        <script>
+            $(document).ready(function () {
+                ShowMessage('Info Message', '@TempData["InfoMassage"]', 'info');
+            });
+        </script>
+    }
+}
